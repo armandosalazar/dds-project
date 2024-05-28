@@ -1,5 +1,6 @@
 services:
   dss-backend:
+    container_name: dss-backend
     build:
       context: dss-backend
       dockerfile: Dockerfile
@@ -9,12 +10,12 @@ services:
       - ./dss-backend:/app
     environment:
       - PORT=8080
-      - NODE_ENV=development
     depends_on:
       - dss-db
     networks:
       - dss-network
   dss-db:
+    container_name: dss-db
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -25,3 +26,7 @@ services:
       - "3306:3306"
     networks:
       - dss-network
+
+networks:
+  dss-network:
+    driver: bridge
