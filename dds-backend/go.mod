@@ -1,4 +1,4 @@
-module github.com/armandosalazar/dds-project/dds-backends
+module dds-backends
 
 go 1.22.2
 

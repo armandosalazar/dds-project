@@ -1,16 +1,18 @@
 package models
 
 import (
-	"github.com/armandosalazar/dds-project/dds-backends/utils/token"
+	"dds-backends/utils/token"
+
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
 	gorm.Model
-	Email            string `json:"email"`
+	Email            string `gorm:"size:255;not null;unique" json:"email"`
 	Password         string `json:"password"`
 	TwoFactorEnabled bool   `json:"two_factor_enabled"`
+	TwoFactor        TwoFactor
 }
 
 func (u *User) SaveUser() (*User, error) {

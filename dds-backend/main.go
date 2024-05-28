@@ -4,8 +4,12 @@ import (
 	"crypto"
 	"encoding/base64"
 	"fmt"
+	"net/http"
 
-	"github.com/armandosalazar/dds-project/dds-backends/models"
+	"dds-backends/controllers"
+	"dds-backends/models"
+	"dds-backends/utils/otp"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/sec51/twofactor"
@@ -48,35 +52,66 @@ func main() {
 		})
 	})
 
-	api.POST("/register", func(c *gin.Context) {
-		var input RegisterInput
+	// api.POST("/register", func(c *gin.Context) {
+	// 	var input RegisterInput
 
-		if err := c.ShouldBindJSON(&input); err != nil {
-			c.JSON(400, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
+	// 	if err := c.ShouldBindJSON(&input); err != nil {
+	// 		c.JSON(400, gin.H{
+	// 			"error": err.Error(),
+	// 		})
+	// 		return
+	// 	}
 
-		user := models.User{}
+	// 	user := models.User{}
 
-		user.Email = input.Email
-		user.Password = input.Password
-		user.TwoFactorEnabled = true
+	// 	user.Email = input.Email
+	// 	user.Password = input.Password
+	// 	user.TwoFactorEnabled = true
 
-		_, err := user.SaveUser()
+	// 	_, err := user.SaveUser()
 
-		if err != nil {
-			c.JSON(400, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
+	// 	if err != nil {
+	// 		c.JSON(400, gin.H{
+	// 			"error": err.Error(),
+	// 		})
+	// 		return
+	// 	}
 
-		c.JSON(200, gin.H{
-			"message": "registered",
+	// 	c.JSON(200, gin.H{
+	// 		"message": "registered",
+	// 	})
+	// })
+	api.GET("/validate", func(ctx *gin.Context) {
+		otp := otp.GetOtpFromDb()
+
+		qrBytes, _ := otp.QR()
+
+		qrBase64 := base64.StdEncoding.EncodeToString(qrBytes)
+
+		ctx.JSON(http.StatusOK, gin.H{
+			"qrBase64": qrBase64,
 		})
+
 	})
+	api.POST("/validate/:code", func(ctx *gin.Context) {
+		code := ctx.Params.ByName("code")
+
+		otp := otp.GetOtpFromDb()
+
+		if err := otp.Validate(code); err != nil {
+			ctx.JSON(http.StatusForbidden, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		ctx.JSON(http.StatusOK, gin.H{
+			"code": code,
+		})
+
+	})
+
+	api.POST("/register", controllers.Register)
 
 	api.POST("/login", func(c *gin.Context) {
 		var input LoginInput
