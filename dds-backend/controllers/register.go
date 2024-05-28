@@ -1,39 +1,53 @@
 package controllers
 
 import (
-	"crypto"
+	"dds-backends/database"
+	"dds-backends/models"
 	"net/http"
 
-	"dds-backends/models"
-
 	"github.com/gin-gonic/gin"
-	"github.com/sec51/twofactor"
+	// "github.com/sec51/twofactor"
 )
 
-func Register(context *gin.Context) {
-	email := "armando@email.com"
-	issuer := "DistroTech"
+type RegisterRequest struct {
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
 
-	otp, err := twofactor.NewTOTP(email, issuer, crypto.SHA1, 8)
+func Register(ctx *gin.Context) {
+	var req RegisterRequest
 
-	if err != nil {
-		panic("Error to create otp")
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
 	}
 
-	otpBytes, _ := otp.ToBytes()
-
-	u := models.User{}
-
-	u.Email = email
-	u.Password = "holamundo"
-	u.TwoFactorEnabled = true
-	u.TwoFactor = models.TwoFactor{
-		OTP: otpBytes,
+	user := models.User{
+		Email:            req.Email,
+		Password:         req.Password,
+		TwoFactorEnabled: false,
+		TwoFactor:        models.TwoFactor{},
 	}
 
-	u.SaveUser()
+	if err := user.BeforeSave(); err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
-	context.JSON(http.StatusOK, gin.H{
+	db := database.GetDbConnection()
+
+	if err := db.Create(&user).Error; err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
 		"message": "registered",
 	})
 }
