@@ -1,32 +1,34 @@
 services:
-  dss-backend:
-    container_name: dss-backend
+  dds-backend:
+    container_name: dds-backend
     build:
-      context: dss-backend
+      context: dds-backend
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
     volumes:
-      - ./dss-backend:/app
+      - ./dds-backend:/app
     environment:
       - PORT=8080
     depends_on:
-      - dss-db
+      - dds-db
+    links:
+      - dds-db
     networks:
-      - dss-network
-  dss-db:
-    container_name: dss-db
+      - dds-network
+  dds-db:
+    container_name: dds-db
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: dss
-      MYSQL_USER: dss
-      MYSQL_PASSWORD: dss
+      MYSQL_DATABASE: dds
+      MYSQL_USER: dds
+      MYSQL_PASSWORD: dds
     ports:
       - "3306:3306"
     networks:
-      - dss-network
+      - dds-network
 
 networks:
-  dss-network:
+  dds-network:
     driver: bridge
