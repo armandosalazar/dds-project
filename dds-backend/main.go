@@ -22,14 +22,9 @@ func main() {
 
 	api := router.Group("/api")
 
-	api.GET("/ping", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-
 	api.POST("/register", controllers.Register)
 	api.POST("/login", controllers.Login)
+	api.POST("/verify-2fa", controllers.Verify2FA)
 
 	router.Run(":8080")
 }

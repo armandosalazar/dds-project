@@ -31,8 +31,8 @@ export default function Home() {
       <button onClick={handleLogout}>
         Logout
       </button>
-      <Button>
-        Ho
+      <Button color="primary">
+        Enable 2FA
       </Button>
       {/* <Button onClick={handleLogout}>
         Logout
