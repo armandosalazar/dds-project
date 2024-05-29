@@ -31,6 +31,9 @@ export default function Home() {
       <button onClick={handleLogout}>
         Logout
       </button>
+      <Button>
+        Ho
+      </Button>
       {/* <Button onClick={handleLogout}>
         Logout
       </Button> */}
