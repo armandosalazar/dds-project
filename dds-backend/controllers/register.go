@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	// "github.com/sec51/twofactor"
 )
 
 type RegisterRequest struct {
@@ -31,14 +30,18 @@ func Register(ctx *gin.Context) {
 		TwoFactor:        models.TwoFactor{},
 	}
 
-	if err := user.BeforeSave(); err != nil {
+	twoFactor := models.TwoFactor{}
+
+	db := database.GetDbConnection()
+
+	if err := db.Create(&twoFactor).Error; err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
 
-	db := database.GetDbConnection()
+	user.TwoFactorID = twoFactor.ID
 
 	if err := db.Create(&user).Error; err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
