@@ -74,11 +74,14 @@ export default function Home() {
         {twoFatEnabled === "true" && (
           <Image src={imageBase64} width={200} />
         )}
-        <Button
+        {/* <Button
           color="primary"
           onClick={handleEnableTwoFat}>
           {twoFatEnabled === "false" ? "Enable" : "Disable"} 2FA
-        </Button>
+        </Button> */}
+        <Switch isSelected={twoFatEnabled === "true"} onChange={handleEnableTwoFat}>
+          {twoFatEnabled === "false" ? "Enable" : "Disable"} 2FA
+        </Switch>
       </section>
     </main>
   );

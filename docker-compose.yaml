@@ -26,6 +26,8 @@ services:
       MYSQL_PASSWORD: dds
     ports:
       - "3306:3306"
+    volumes:
+      - ./dds-db:/var/lib/mysql
     networks:
       - dds-network
 
