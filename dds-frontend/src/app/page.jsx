@@ -8,6 +8,7 @@ import axios from "axios";
 export default function Home() {
   const router = useRouter();
   const [twoFatEnabled, setTwoFatEnabled] = useState(false);
+  const [imageBase64, setImageBase64] = useState("");
 
   useEffect(() => {
     verifySession();
@@ -27,6 +28,10 @@ export default function Home() {
       },
     });
 
+    if (res.data.twoFatEnabled) {
+      setImageBase64(`data:image/png;base64,${res.data.qrCode}`);
+    }
+
     setTwoFatEnabled(res.data.twoFatEnabled);
     localStorage.setItem("twoFatEnabled", res.data.twoFatEnabled);
   }
@@ -45,6 +50,7 @@ export default function Home() {
       <button onClick={handleLogout}>
         Logout
       </button>
+      <img src={imageBase64} />
       <br />
       <Switch
         cheecked={`${twoFatEnabled}`}
