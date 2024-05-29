@@ -2,72 +2,79 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spacer } from "@nextui-org/react";
+import { UsersIcon } from "@heroicons/react/24/outline";
+import axios from "axios";
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleLogin() {
-    fetch("http://localhost:8080/api/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.error) {
-          alert(res.error);
-          return;
-        }
+  async function handleRegister() {
+    try {
+      const res = await axios.post("http://localhost:8080/api/register", { email, password })
 
-        localStorage.setItem("token", res.token);
-        window.location.href = "/login";
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("An error occurred");
-      });
+      toast.success("User register successfully")
+
+    } catch (error) {
+      toast.error(error.response.data.error)
+    }
   }
 
   return (
-    <main className={"container m-auto"}>
-      <h1 className={"text-4xl font-bold text-center py-2 text-sky-500"}>
-        Register
-      </h1>
-      <div
-        className={
-          "shadow-slate-50 border border-sky-400 flex flex-col p-4 rounded-md"
-        }
-      >
-        <input
-          className={"border border-sky-400 p-2 mb-2 rounded-md"}
-          type={"text"}
-          placeholder={"Email"}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type={"password"}
-          className={"border border-sky-400 p-2 mb-2 rounded-md"}
-          placeholder={"Password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button
-          onClick={handleLogin}
-          className={"bg-sky-400 text-white p-2 rounded-md"}
-        >
-          Register
-        </button>
-        <p className={"text-center my-2"}>
-          Already have an account?,{" "}
-          <Link href="/login" className={"text-sky-300"}>
-            Login
-          </Link>
-        </p>
-      </div>
+    <main>
+      <Toaster
+        position="top-right"
+      />
+      <Card className="max-w-[400px] mx-auto my-40">
+        <CardHeader>
+          <UsersIcon className="w-8 h-8" />
+          <Spacer x={2} />
+          <div>
+            <h2 className="font-bold text-2xl">Register</h2>
+            <p className="text-sm text-gray-500">Register to your account</p>
+          </div>
+        </CardHeader>
+        <Divider />
+        <CardBody>
+          <Input
+            isRequired
+            type="email"
+            label="Email"
+            placeholder="Enter your email"
+            onValueChange={setEmail}
+          />
+          <Spacer y={4} />
+          <Input
+            isRequired
+            type="password"
+            label="Password"
+            placeholder="Enter your password"
+            onValueChange={setPassword}
+          />
+          <Spacer y={4} />
+          <Button
+            onClick={handleRegister}
+            color="primary"
+          >
+            Register
+          </Button>
+          <Spacer y={4} />
+          <p className={"text-center text-small"}>
+            Already have an account?,{" "}
+            <Link href="/login" className={"text-blue-500"}>
+              login
+            </Link>
+          </p>
+        </CardBody>
+        <Divider />
+        <CardFooter>
+          <p className="text-center text-xs">
+            Secure Software Development
+          </p>
+        </CardFooter>
+      </Card>
     </main>
   );
 }

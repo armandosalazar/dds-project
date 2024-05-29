@@ -7,7 +7,7 @@ import axios from "axios";
 
 export default function Home() {
   const router = useRouter();
-  const [twoFatEnabled, setTwoFatEnabled] = useState(false);
+  const [twoFatEnabled, setTwoFatEnabled] = useState("false");
   const [imageBase64, setImageBase64] = useState("");
 
   useEffect(() => {
@@ -15,11 +15,13 @@ export default function Home() {
   }, []);
 
   function verifySession() {
-    if (!localStorage.getItem("token")) {
+    if (!localStorage.getItem("token") || !localStorage.getItem("twoFatEnabled")) {
       router.push("/login");
     }
-    setTwoFatEnabled(localStorage.getItem("twoFatEnabled"));
+    setTwoFatEnabled(localStorage.getItem("twoFatEnabled"))
     setImageBase64(`data:image/png;base64,${localStorage.getItem("image")}`);
+
+    console.log(twoFatEnabled);
   }
 
   async function handleEnableTwoFat() {
@@ -36,8 +38,8 @@ export default function Home() {
       localStorage.removeItem("image");
     }
 
-    setTwoFatEnabled(res.data.twoFatEnabled);
     localStorage.setItem("twoFatEnabled", res.data.twoFatEnabled);
+    setTwoFatEnabled(res.data.twoFatEnabled.toString());
   }
 
   function handleLogout() {
@@ -69,15 +71,14 @@ export default function Home() {
       <section className="container mx-auto flex flex-col items-center p-4 max-w-fit my-4">
         <h2 className="text-center text-xl font-bold">Two Factor Authentication</h2>
         <p>If you enable 2FA, you will need to enter a code every time you log in.</p>
-        {twoFatEnabled && (
-          // <img src={imageBase64}  width={200}/>
+        {twoFatEnabled === "true" && (
           <Image src={imageBase64} width={200} />
         )}
-        <Switch
-          isSelected={twoFatEnabled}
-          onChange={handleEnableTwoFat}>
-          {twoFatEnabled ? "Disable" : "Enable"} 2FA
-        </Switch>
+        <Button
+          color="primary"
+          onClick={handleEnableTwoFat}>
+          {twoFatEnabled === "false" ? "Enable" : "Disable"} 2FA
+        </Button>
       </section>
     </main>
   );

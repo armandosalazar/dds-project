@@ -17,21 +17,20 @@ export default function Login() {
   const [totp, setTotp] = useState("");
 
   async function handleLogin() {
-    const res = await axios.post("http://localhost:8080/api/login", { email, password })
+    try {
+      const res = await axios.post("http://localhost:8080/api/login", { email, password })
 
-    const data = res.data;
+      const data = res.data;
 
-    if (data.error) {
-      alert(data.error);
-      return;
-    }
-
-    if (data.twoFatEnabled) {
-      setIsOpen(true);
-    } else {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("twoFatEnabled", data.twoFatEnabled);
-      router.push("/");
+      if (data.twoFatEnabled) {
+        setIsOpen(true);
+      } else {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("twoFatEnabled", data.twoFatEnabled);
+        router.push("/");
+      }
+    } catch (error) {
+      toast.error(error.response.data.error);
     }
   }
 
@@ -80,7 +79,7 @@ export default function Login() {
           <Spacer x={2} />
           <div>
             <h2 className="font-bold text-2xl">Login</h2>
-            <p className="text-sm text-gray-500">Login to your account</p>           
+            <p className="text-sm text-gray-500">Login to your account</p>
           </div>
         </CardHeader>
         <Divider />
