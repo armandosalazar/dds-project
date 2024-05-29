@@ -4,7 +4,6 @@ import (
 	"dds-backends/database"
 	"dds-backends/models"
 	"dds-backends/utils/token"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,11 +13,8 @@ import (
 func Enable2FA(ctx *gin.Context) {
 	email := ctx.GetString("email")
 
-	fmt.Println(email)
-
 	user := models.User{}
 	db := database.GetDbConnection()
-	// user includes TwoFactor association user belongs to TwoFactor
 	db.Where("email = ?", email).Preload("TwoFactor").First(&user)
 
 	user.TwoFactorEnabled = !user.TwoFactorEnabled
