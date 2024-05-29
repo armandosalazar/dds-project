@@ -20,6 +20,8 @@ func Enable2FA(ctx *gin.Context) {
 	user.TwoFactorEnabled = !user.TwoFactorEnabled
 	db.Save(&user)
 
+	fmt.Println(user)
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"twoFatEnabled": user.TwoFactorEnabled,
 	})

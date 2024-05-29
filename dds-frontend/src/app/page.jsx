@@ -1,27 +1,40 @@
 "use client";
 
-import { Button } from "@nextui-org/button";
 import { Switch } from "@nextui-org/react";
-import { redirect } from "next/navigation";
-import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function Home() {
+  const router = useRouter();
+  const [twoFatEnabled, setTwoFatEnabled] = useState(false);
+
   useEffect(() => {
     verifySession();
   }, []);
 
   function verifySession() {
-    const token = localStorage.getItem("token");
+    if (!localStorage.getItem("token")) {
+      router.push("/login");
+    }
+    setTwoFatEnabled(localStorage.getItem("twoFatEnabled"));
+  }
 
-    // if (!token) {
-    //   redirect("/login");
-    // }
+  async function handleEnableTwoFat() {
+    const res = await axios.get("http://localhost:8080/api/enable-2fa", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    setTwoFatEnabled(res.data.twoFatEnabled);
+    localStorage.setItem("twoFatEnabled", res.data.twoFatEnabled);
   }
 
   function handleLogout() {
     localStorage.removeItem("token");
-    // window.location.href = "login";
-    redirect("/login");
+    localStorage.removeItem("twoFatEnabled");
+    router.push("/login");
   }
 
   return (
@@ -33,12 +46,11 @@ export default function Home() {
         Logout
       </button>
       <br />
-      <Switch>
-        Enable 2FA
+      <Switch
+        cheecked={`${twoFatEnabled}`}
+        onChange={handleEnableTwoFat}>
+        {twoFatEnabled ? "Disable" : "Enable"} 2FA
       </Switch>
-      {/* <Button onClick={handleLogout}>
-        Logout
-      </Button> */}
     </main>
   );
 }

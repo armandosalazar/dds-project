@@ -61,8 +61,8 @@ func Login(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"message":   "logged in",
-		"token":     token,
-		"twofactor": user.TwoFactorEnabled,
+		"message":       "logged in",
+		"token":         token,
+		"twoFatEnabled": user.TwoFactorEnabled,
 	})
 }
