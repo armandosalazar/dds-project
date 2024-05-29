@@ -4,5 +4,6 @@ import "gorm.io/gorm"
 
 type TwoFactor struct {
 	gorm.Model
-	TOTP []byte
+	Url    string `json:"url"`
+	Secret string
 }

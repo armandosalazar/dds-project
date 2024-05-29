@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/pquerna/otp/totp"
 )
 
 func Enable2FA(ctx *gin.Context) {
@@ -16,11 +17,28 @@ func Enable2FA(ctx *gin.Context) {
 
 	user := models.User{}
 	db := database.GetDbConnection()
-	db.Where("email = ?", email).First(&user)
-	user.TwoFactorEnabled = !user.TwoFactorEnabled
-	db.Save(&user)
+	db.Where("email = ?", email).Preload("TwoFactor").First(&user)
 
-	fmt.Println(user)
+	user.TwoFactorEnabled = !user.TwoFactorEnabled
+
+	if len(user.TwoFactor.Url) == 0 {
+		otp, err := totp.Generate(totp.GenerateOpts{
+			Issuer:      "DDS",
+			AccountName: email,
+		})
+
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		user.TwoFactor.Url = otp.URL()
+		user.TwoFactor.Secret = otp.Secret()
+	}
+
+	db.Save(&user)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"twoFatEnabled": user.TwoFactorEnabled,
