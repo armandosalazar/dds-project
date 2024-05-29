@@ -12,6 +12,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [totp, setTotp] = useState("");
 
   async function handleLogin() {
     const res = await axios.post("http://localhost:8080/api/login", { email, password })
@@ -33,13 +34,17 @@ export default function Login() {
   }
 
   async function handleVerifyCode2FA() {
-    const res = await axios.post("http://localhost:8080/api/verify-2fa", { email, password })
-    const data = res.data;
+    try {
+      const res = await axios.post("http://localhost:8080/api/verify-2fa", { email, totp })
+      const data = res.data;
 
-    if (data.twofactor) {
-      setIsOpen(true);
-    } else {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("twoFatEnabled", data.twoFatEnabled);
+      localStorage.setItem("image", data.image)
       router.push("/");
+    } catch (error) {
+      alert("Please enter a valid code");
+      return;
     }
   }
 
@@ -49,7 +54,7 @@ export default function Login() {
         <ModalContent>
           <ModalHeader>Two Factor</ModalHeader>
           <ModalBody>
-            <Input isRequired type="text" label={"Code"} placeholder="Enter your code" />
+            <Input isRequired type="text" label={"Code"} placeholder="Enter your code" onValueChange={setTotp} />
           </ModalBody>
           <ModalFooter>
             <Button color="danger" variant="light" onClick={() => {
@@ -57,7 +62,7 @@ export default function Login() {
             }}>
               Cancel
             </Button>
-            <Button color="primary">
+            <Button color="primary" onClick={handleVerifyCode2FA}>
               Verify
             </Button>
           </ModalFooter>
