@@ -9,7 +9,7 @@ import (
 func GenerateToken(email string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"email": email,
-		"exp":   os.Getenv("JWT_EXPIRATION"),
+		// "exp":   os.Getenv("JWT_EXPIRATION"),
 	})
 
 	return token.SignedString([]byte(os.Getenv("JWT_SECRET")))
