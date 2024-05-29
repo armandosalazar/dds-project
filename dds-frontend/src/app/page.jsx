@@ -1,6 +1,6 @@
 "use client";
 
-import { Switch } from "@nextui-org/react";
+import { Button, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Switch } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -19,6 +19,7 @@ export default function Home() {
       router.push("/login");
     }
     setTwoFatEnabled(localStorage.getItem("twoFatEnabled"));
+    setImageBase64(`data:image/png;base64,${localStorage.getItem("image")}`);
   }
 
   async function handleEnableTwoFat() {
@@ -31,6 +32,8 @@ export default function Home() {
     if (res.data.twoFatEnabled) {
       localStorage.setItem("image", res.data.image);
       setImageBase64(`data:image/png;base64,${res.data.image}`);
+    } else {
+      localStorage.removeItem("image");
     }
 
     setTwoFatEnabled(res.data.twoFatEnabled);
@@ -40,24 +43,42 @@ export default function Home() {
   function handleLogout() {
     localStorage.removeItem("token");
     localStorage.removeItem("twoFatEnabled");
+    localStorage.removeItem("image");
     router.push("/login");
   }
 
   return (
     <main>
-      <h1>
-        Home page
-      </h1>
-      <button onClick={handleLogout}>
-        Logout
-      </button>
-      <img src={imageBase64} />
-      <br />
-      <Switch
-        cheecked={`${twoFatEnabled}`}
-        onChange={handleEnableTwoFat}>
-        {twoFatEnabled ? "Disable" : "Enable"} 2FA
-      </Switch>
+      <Navbar>
+        <NavbarBrand>
+          <h1 className="font-bold">
+            Secure Software Development
+          </h1>
+        </NavbarBrand>
+        <NavbarContent justify="end">
+          <NavbarItem>
+            <Button
+              color="primary"
+              variant="flat"
+              onClick={handleLogout}>
+              Logout
+            </Button>
+          </NavbarItem>
+        </NavbarContent>
+      </Navbar>
+      <section className="container mx-auto flex flex-col items-center p-4 max-w-fit my-4">
+        <h2 className="text-center text-xl font-bold">Two Factor Authentication</h2>
+        <p>If you enable 2FA, you will need to enter a code every time you log in.</p>
+        {twoFatEnabled && (
+          // <img src={imageBase64}  width={200}/>
+          <Image src={imageBase64} width={200} />
+        )}
+        <Switch
+          isSelected={twoFatEnabled}
+          onChange={handleEnableTwoFat}>
+          {twoFatEnabled ? "Disable" : "Enable"} 2FA
+        </Switch>
+      </section>
     </main>
   );
 }
