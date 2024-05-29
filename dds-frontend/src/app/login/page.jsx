@@ -1,34 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
-export default function Page() {
+export default function Login() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleLogin() {
-    fetch("http://localhost:8080/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        if (res.error) {
-          alert(res.error);
-          return;
-        }
+  async function handleLogin() {
+    const res = await axios.post("http://localhost:8080/api/login", { email, password })
+    const data = res.data;
 
-        localStorage.setItem("token", res.token);
-        localStorage.setItem("qr", res.qr);
-        window.location.href = "two-factor";
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("An error occurred");
-      });
+    if (data.twofactor) {
+      router.push("/two-factor");
+    } else {
+      router.push("/");
+    }
   }
 
   return (
@@ -63,9 +53,9 @@ export default function Page() {
         </button>
         <p className={"text-center my-2"}>
           Don't have an account?,{" "}
-          <a href="/register" className={"text-sky-300"}>
+          <Link href="/register" className={"text-sky-300"}>
             Register
-          </a>
+          </Link>
         </p>
       </div>
     </main>

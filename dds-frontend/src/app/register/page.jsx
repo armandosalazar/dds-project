@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
-export default function Page() {
+export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -62,9 +63,9 @@ export default function Page() {
         </button>
         <p className={"text-center my-2"}>
           Already have an account?,{" "}
-          <a href="/login" className={"text-sky-300"}>
+          <Link href="/login" className={"text-sky-300"}>
             Login
-          </a>
+          </Link>
         </p>
       </div>
     </main>
