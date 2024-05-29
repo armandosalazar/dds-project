@@ -1,10 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
+import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spacer } from "@nextui-org/react";
+import toast, { Toaster } from "react-hot-toast";
+import Link from "next/link";
+import { UsersIcon } from "@heroicons/react/24/outline";
 
 export default function Login() {
   const router = useRouter();
@@ -43,13 +45,16 @@ export default function Login() {
       localStorage.setItem("image", data.image)
       router.push("/");
     } catch (error) {
-      alert("Please enter a valid code");
+      toast.error(error.response.data.error);
       return;
     }
   }
 
   return (
     <main>
+      <Toaster
+        position="top-right"
+      />
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <ModalContent>
           <ModalHeader>Two Factor</ModalHeader>
@@ -68,30 +73,55 @@ export default function Login() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <Input
-        type="email"
-        label="Email"
-        placeholder="Enter your email"
-        onValueChange={setEmail}
-      />
-      <Input
-        type="password"
-        label="Password"
-        placeholder="Enter your password"
-        onValueChange={setPassword}
-      />
-      <Button
-        onClick={handleLogin}
-        color="primary"
-      >
-        Login
-      </Button>
-      <p className={"text-center my-2"}>
-        Don't have an account?,{" "}
-        <Link href="/register" className={"text-sky-300"}>
-          Register
-        </Link>
-      </p>
+
+      <Card className="max-w-[400px] mx-auto my-40">
+        <CardHeader>
+          <UsersIcon className="w-8 h-8" />
+          <Spacer x={2} />
+          <div>
+            <h2 className="font-bold text-2xl">Login</h2>
+            <p className="text-sm text-gray-500">Login to your account</p>           
+          </div>
+        </CardHeader>
+        <Divider />
+        <CardBody>
+          <Input
+            isRequired
+            type="email"
+            label="Email"
+            placeholder="Enter your email"
+            onValueChange={setEmail}
+          />
+          <Spacer y={4} />
+          <Input
+            isRequired
+            type="password"
+            label="Password"
+            placeholder="Enter your password"
+            onValueChange={setPassword}
+          />
+          <Spacer y={4} />
+          <Button
+            onClick={handleLogin}
+            color="primary"
+          >
+            Login
+          </Button>
+          <Spacer y={4} />
+          <p className={"text-center text-small"}>
+            Don't have an account?,{" "}
+            <Link href="/register" className="text-blue-500">
+              register
+            </Link>
+          </p>
+        </CardBody>
+        <Divider />
+        <CardFooter>
+          <p className="text-center text-xs">
+            Secure Software Development
+          </p>
+        </CardFooter>
+      </Card>
     </main>
   );
 }
