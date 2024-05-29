@@ -29,7 +29,8 @@ export default function Home() {
     });
 
     if (res.data.twoFatEnabled) {
-      setImageBase64(`data:image/png;base64,${res.data.qrCode}`);
+      localStorage.setItem("image", res.data.image);
+      setImageBase64(`data:image/png;base64,${res.data.image}`);
     }
 
     setTwoFatEnabled(res.data.twoFatEnabled);
