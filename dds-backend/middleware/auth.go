@@ -11,9 +11,9 @@ func AuthMiddleware() gin.HandlerFunc {
 		authorization := ctx.GetHeader("Authorization")
 		authorizationToken := authorization[7:]
 
-		tokenJwt, err := token.VerifyToken(authorizationToken)
+		jwtToken, err := token.VerifyToken(authorizationToken)
 
-		if err != nil || !tokenJwt.Valid {
+		if err != nil || !jwtToken.Valid {
 			ctx.JSON(401, gin.H{
 				"error": "Unauthorized",
 			})

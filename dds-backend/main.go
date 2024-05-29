@@ -26,7 +26,7 @@ func main() {
 	api.POST("/register", controllers.Register)
 	api.POST("/login", controllers.Login)
 	api.Use(middleware.AuthMiddleware())
-	api.POST("/enable-2fa", controllers.Enable2FA)
+	api.GET("/enable-2fa", controllers.Enable2FA)
 	api.POST("/verify-2fa", controllers.Verify2FA)
 
 	router.Run(":8080")

@@ -1,18 +1,27 @@
 package controllers
 
 import (
+	"dds-backends/database"
+	"dds-backends/models"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-type Enable2FARequest struct {
-	Enable bool `json:"enable" binding:"required"`
-}
-
 func Enable2FA(ctx *gin.Context) {
+	email := ctx.GetString("email")
+
+	fmt.Println(email)
+
+	user := models.User{}
+	db := database.GetDbConnection()
+	db.Where("email = ?", email).First(&user)
+	user.TwoFactorEnabled = !user.TwoFactorEnabled
+	db.Save(&user)
+
 	ctx.JSON(http.StatusOK, gin.H{
-		"message": "enabled",
+		"twoFatEnabled": user.TwoFactorEnabled,
 	})
 }
 
