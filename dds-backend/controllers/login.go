@@ -3,6 +3,7 @@ package controllers
 import (
 	"dds-backends/database"
 	"dds-backends/models"
+	"dds-backends/utils/token"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -50,8 +51,18 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
+	token, err := token.GenerateToken(user.Email)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": "internal server error",
+		})
+		return
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"message":   "logged in",
-		"twofactor": false,
+		"token":     token,
+		"twofactor": user.TwoFactorEnabled,
 	})
 }

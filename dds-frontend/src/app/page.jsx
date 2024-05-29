@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@nextui-org/button";
+import { Switch } from "@nextui-org/react";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
@@ -31,9 +32,10 @@ export default function Home() {
       <button onClick={handleLogout}>
         Logout
       </button>
-      <Button color="primary">
+      <br />
+      <Switch>
         Enable 2FA
-      </Button>
+      </Switch>
       {/* <Button onClick={handleLogout}>
         Logout
       </Button> */}

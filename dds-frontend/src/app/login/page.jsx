@@ -24,7 +24,16 @@ export default function Login() {
     }
   }
 
-  async function handleVerifyCode2FA() {}
+  async function handleVerifyCode2FA() {
+    const res = await axios.post("http://localhost:8080/api/verify-2fa", { email, password })
+    const data = res.data;
+
+    if (data.twofactor) {
+      setIsOpen(true);
+    } else {
+      router.push("/");
+    }
+  }
 
   return (
     <main>
