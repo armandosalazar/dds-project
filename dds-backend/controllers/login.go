@@ -45,8 +45,8 @@ func Login(ctx *gin.Context) {
 
 	if user.TwoFactorEnabled {
 		ctx.JSON(http.StatusOK, gin.H{
-			"message":   "two factor enabled",
-			"twofactor": true,
+			"message":       "two factor enabled",
+			"twoFatEnabled": true,
 		})
 		return
 	}
