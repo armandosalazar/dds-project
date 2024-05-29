@@ -11,7 +11,9 @@ type Enable2FARequest struct {
 }
 
 func Enable2FA(ctx *gin.Context) {
-	// code here
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "enabled",
+	})
 }
 
 type Verify2FARequest struct {

@@ -21,3 +21,19 @@ func VerifyToken(tokenString string) (*jwt.Token, error) {
 			nil
 	})
 }
+
+func GetEmailFromToken(tokenString string) (string, error) {
+	token, err := VerifyToken(tokenString)
+
+	if err != nil {
+		return "", err
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+
+	if !ok {
+		return "", err
+	}
+
+	return claims["email"].(string), nil
+}
