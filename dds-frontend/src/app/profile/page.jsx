@@ -1,5 +1,5 @@
 "use client";
-import { Divider, Image, Switch } from "@nextui-org/react";
+import { Button, Divider, Image, Switch } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -42,17 +42,30 @@ export default function Profile() {
   return (
     <main className="container mx-auto">
       <section className="p-4">
-        <h1 className="font-bold">Profile</h1>
+        <h2 className="font-bold">Profile</h2>
         <p>Manage your account settings.</p>
       </section>
       <Divider />
       <section className="p-4">
+        <h2 className="font-bold">Email and Password</h2>
+        <p>{useStore((state) => state.email)}</p>
+        <p>********</p>
+        <Button color="primary" variant="flat">
+          Change Password
+        </Button>
+      </section>
+      <Divider />
+      <section className="p-4">
         <h2 className="font-bold">Two Factor Authentication</h2>
-        <p>If you enable 2FA, you will need to enter a code every time you log in.</p>
-        {twoFatEnabled === "true" && (
-          <Image src={imageBase64} width={200} />
-        )}
-        <Switch isSelected={twoFatEnabled === "true"} onChange={handleEnableTwoFat}>
+        <p>
+          If you enable 2FA, you will need to enter a code every time you log
+          in.
+        </p>
+        {twoFatEnabled === "true" && <Image src={imageBase64} width={200} />}
+        <Switch
+          isSelected={twoFatEnabled === "true"}
+          onChange={handleEnableTwoFat}
+        >
           {twoFatEnabled === "false" ? "Enable" : "Disable"} 2FA
         </Switch>
       </section>
