@@ -3,45 +3,96 @@
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spacer } from "@nextui-org/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Divider,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Spacer,
+} from "@nextui-org/react";
 import toast, { Toaster } from "react-hot-toast";
 import Link from "next/link";
 import { UsersIcon } from "@heroicons/react/24/outline";
+import useStore from "../../store/store";
+import { EyeFilledIcon } from "../icons/EyeFilledIcon";
+import { EyeSlashFilledIcon } from "../icons/EyeSlashFilledIcon";
 
 export default function Login() {
+  /* Hooks */
   const router = useRouter();
-
+  const axiosHttp = axios.create({
+    baseURL: "http://localhost:8080",
+  });
+  /* State */
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [totp, setTotp] = useState("");
+  /* Store */
+  const { setToken, setTwoFactorEnabled } = useStore();
+  /* Regex */
+  const validateEmail = (email) =>
+    email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
+
+  const validatePassword = (password) =>
+    password.match(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+    );
 
   async function handleLogin() {
     try {
-      const res = await axios.post("http://localhost:8080/api/login", { email, password })
+      if (!validateEmail(email)) {
+        toast.error("Please enter a valid email address.");
+        return;
+      }
 
-      const data = res.data;
+      if (!validatePassword(password)) {
+        toast.error(
+          "The password must be at least 8 characters long, including at least one uppercase letter, one lowercase letter, one digit and one special character (@, $, !, %, *, ?, ?, &). Please try again."
+        );
+        return;
+      }
 
-      if (data.twoFatEnabled) {
+      const res = await axiosHttp.post("/api/login", {
+        email,
+        password,
+      });
+
+      if (res.data.twoFatEnabled) {
+        setTwoFactorEnabled(res.data.twoFactorEnabled);
         setIsOpen(true);
       } else {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("twoFatEnabled", data.twoFatEnabled);
-        router.push("/");
+        setToken(res.data.token);
+        useStore.setState({ email: res.data.email });
+        setTwoFactorEnabled(res.data.twoFactorEnabled);
+        toast.success(res.data.message);
+        router.push("/home");
       }
-    } catch (error) {
-      toast.error(error.response.data.error);
+    } catch (err) {
+      toast.error(err.response.data.error);
     }
   }
 
   async function handleVerifyCode2FA() {
     try {
-      const res = await axios.post("http://localhost:8080/api/verify-2fa", { email, totp })
+      const res = await axios.post("http://localhost:8080/api/verify-2fa", {
+        email,
+        totp,
+      });
       const data = res.data;
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("twoFatEnabled", data.twoFatEnabled);
-      localStorage.setItem("image", data.image)
+      localStorage.setItem("image", data.image);
       router.push("/");
     } catch (error) {
       toast.error(error.response.data.error);
@@ -49,21 +100,31 @@ export default function Login() {
     }
   }
 
+  const toggleVisibility = () => setIsVisible(!isVisible);
+
   return (
     <main>
-      <Toaster
-        position="top-right"
-      />
+      <Toaster position="top-right" />
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <ModalContent>
           <ModalHeader>Two Factor</ModalHeader>
           <ModalBody>
-            <Input isRequired type="text" label={"Code"} placeholder="Enter your code" onValueChange={setTotp} />
+            <Input
+              isRequired
+              type="text"
+              label={"Code"}
+              placeholder="Enter your code"
+              onValueChange={setTotp}
+            />
           </ModalBody>
           <ModalFooter>
-            <Button color="danger" variant="light" onClick={() => {
-              setIsOpen(false);
-            }}>
+            <Button
+              color="danger"
+              variant="light"
+              onClick={() => {
+                setIsOpen(false);
+              }}
+            >
               Cancel
             </Button>
             <Button color="primary" onClick={handleVerifyCode2FA}>
@@ -85,25 +146,42 @@ export default function Login() {
         <Divider />
         <CardBody>
           <Input
+            isInvalid={!validateEmail(email)}
+            isClearable
             isRequired
             type="email"
             label="Email"
             placeholder="Enter your email"
             onValueChange={setEmail}
+            errorMessage={"Please enter a valid email address."}
           />
           <Spacer y={4} />
           <Input
             isRequired
-            type="password"
+            isInvalid={!validatePassword(password)}
+            type={isVisible ? "text" : "password"}
             label="Password"
             placeholder="Enter your password"
             onValueChange={setPassword}
+            errorMessage={
+              "The password must be at least 8 characters long, including at least one uppercase letter, one lowercase letter, one digit and one special character (@, $, !, %, *, ?, ?, &). Please try again."
+            }
+            endContent={
+              <button
+                className="focus:outline-none"
+                type="button"
+                onClick={toggleVisibility}
+              >
+                {isVisible ? (
+                  <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                ) : (
+                  <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                )}
+              </button>
+            }
           />
           <Spacer y={4} />
-          <Button
-            onClick={handleLogin}
-            color="primary"
-          >
+          <Button onClick={handleLogin} color="primary">
             Login
           </Button>
           <Spacer y={4} />
@@ -116,9 +194,7 @@ export default function Login() {
         </CardBody>
         <Divider />
         <CardFooter>
-          <p className="text-center text-xs">
-            Secure Software Development
-          </p>
+          <p className="text-center text-xs">Secure Software Development</p>
         </CardFooter>
       </Card>
     </main>
