@@ -1,6 +1,5 @@
 "use client";
 
-import { Button, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Switch } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -15,10 +14,13 @@ export default function Home() {
   }, []);
 
   function verifySession() {
-    if (!localStorage.getItem("token") || !localStorage.getItem("twoFatEnabled")) {
+    if (
+      !localStorage.getItem("token") ||
+      !localStorage.getItem("twoFatEnabled")
+    ) {
       router.push("/login");
     }
-    setTwoFatEnabled(localStorage.getItem("twoFatEnabled"))
+    setTwoFatEnabled(localStorage.getItem("twoFatEnabled"));
     setImageBase64(`data:image/png;base64,${localStorage.getItem("image")}`);
 
     console.log(twoFatEnabled);
@@ -42,47 +44,30 @@ export default function Home() {
     setTwoFatEnabled(res.data.twoFatEnabled.toString());
   }
 
-  function handleLogout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("twoFatEnabled");
-    localStorage.removeItem("image");
-    router.push("/login");
-  }
-
   return (
-    <main>
-      <Navbar>
-        <NavbarBrand>
-          <h1 className="font-bold">
+    <main className="container mx-auto">
+      <div className="flex">
+        <div>
+          <h1 className="text-4xl text-right font-bold">
             Secure Software Development
           </h1>
-        </NavbarBrand>
-        <NavbarContent justify="end">
-          <NavbarItem>
-            <Button
-              color="primary"
-              variant="flat"
-              onClick={handleLogout}>
-              Logout
-            </Button>
-          </NavbarItem>
-        </NavbarContent>
-      </Navbar>
-      <section className="container mx-auto flex flex-col items-center p-4 max-w-fit my-4">
-        <h2 className="text-center text-xl font-bold">Two Factor Authentication</h2>
-        <p>If you enable 2FA, you will need to enter a code every time you log in.</p>
-        {twoFatEnabled === "true" && (
-          <Image src={imageBase64} width={200} />
-        )}
-        {/* <Button
-          color="primary"
-          onClick={handleEnableTwoFat}>
-          {twoFatEnabled === "false" ? "Enable" : "Disable"} 2FA
-        </Button> */}
-        <Switch isSelected={twoFatEnabled === "true"} onChange={handleEnableTwoFat}>
-          {twoFatEnabled === "false" ? "Enable" : "Disable"} 2FA
-        </Switch>
-      </section>
+          <h2 className="text-4xl text-right">
+            Best Practices, Frameworks, and Resources
+          </h2>
+        </div>
+        <div>
+          <p className="m-4">
+            Secure software development is the process of developing software in
+            a way that protects it from security vulnerabilities and threats.
+            This involves identifying potential security risks, implementing
+            security controls, and testing the software to ensure that it is
+            secure. Secure software development is essential for protecting
+            sensitive data, preventing cyber attacks, and maintaining the trust
+            of users. In this guide, we will explore best practices, frameworks,
+            and resources for secure software development.
+          </p>
+        </div>
+      </div>
     </main>
   );
 }
