@@ -1,16 +1,20 @@
 "use client";
+
 import { Button, Divider, Image, Switch } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect } from "react";
 import useStore from "../../store/store";
+import axiosHttp from "../../utils/axiosConfig";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Profile() {
+  /* Router */
   const router = useRouter();
-  const [twoFatEnabled, setTwoFatEnabled] = useState("false");
-  const [imageBase64, setImageBase64] = useState("");
   /* Store */
-  const { token } = useStore();
+  const { token } = useStore.getState();
+  /* State */
+  const twoFactorEnabled = useStore((state) => state.twoFactorEnabled);
+  const twoFactorImage = useStore((state) => state.twoFactorImage);
 
   useEffect(() => {
     verifySession();
@@ -23,24 +27,25 @@ export default function Profile() {
   }
 
   async function handleEnableTwoFat() {
-    const res = await axios.get("http://localhost:8080/api/enable-2fa", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    try {
+      const res = await axiosHttp.get("/api/enable-2fa");
 
-    if (res.data.twoFatEnabled) {
-      localStorage.setItem("image", res.data.image);
-      setImageBase64(`data:image/png;base64,${res.data.image}`);
-    } else {
-      localStorage.removeItem("image");
+      if (res.data.twoFactorEnabled) {
+        useStore.setState({ twoFactorEnabled: res.data.twoFactorEnabled });
+        useStore.setState({ twoFactorImage: res.data.twoFactorImage });
+      } else {
+        useStore.setState({ twoFactorEnabled: res.data.twoFactorEnabled });
+        useStore.setState({ twoFactorImage: "" });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response.data.error);
     }
-
-    localStorage.setItem("twoFatEnabled", res.data.twoFatEnabled);
-    setTwoFatEnabled(res.data.twoFatEnabled.toString());
   }
+
   return (
     <main className="container mx-auto">
+      <Toaster position="top-right" />
       <section className="p-4">
         <h2 className="font-bold">Profile</h2>
         <p>Manage your account settings.</p>
@@ -61,12 +66,11 @@ export default function Profile() {
           If you enable 2FA, you will need to enter a code every time you log
           in.
         </p>
-        {twoFatEnabled === "true" && <Image src={imageBase64} width={200} />}
-        <Switch
-          isSelected={twoFatEnabled === "true"}
-          onChange={handleEnableTwoFat}
-        >
-          {twoFatEnabled === "false" ? "Enable" : "Disable"} 2FA
+        {twoFactorEnabled && (
+          <Image src={`data:image/png;base64,${twoFactorImage}`} width={200} />
+        )}
+        <Switch isSelected={twoFactorEnabled} onChange={handleEnableTwoFat}>
+          {twoFactorEnabled ? "Disable" : "Enable"} 2FA
         </Switch>
       </section>
     </main>

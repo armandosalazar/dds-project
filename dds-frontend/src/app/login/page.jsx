@@ -67,7 +67,7 @@ export default function Login() {
         password,
       });
 
-      if (res.data.twoFatEnabled) {
+      if (res.data.twoFactorEnabled) {
         setTwoFactorEnabled(res.data.twoFactorEnabled);
         setIsOpen(true);
       } else {
@@ -84,20 +84,35 @@ export default function Login() {
 
   async function handleVerifyCode2FA() {
     try {
-      const res = await axios.post("http://localhost:8080/api/verify-2fa", {
+      const res = await axiosHttp.post("/api/verify-2fa", {
         email,
         totp,
       });
-      const data = res.data;
 
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("twoFatEnabled", data.twoFatEnabled);
-      localStorage.setItem("image", data.image);
+      useStore.setState({ email: email });
+      setToken(res.data.token);
+      setTwoFactorEnabled(res.data.twoFactorEnabled);
+      useStore.setState({ twoFactorImage: res.data.twoFactorImage });
+
       router.push("/");
     } catch (error) {
       toast.error(error.response.data.error);
-      return;
     }
+    // try {
+    //   const res = await axios.post("http://localhost:8080/api/verify-2fa", {
+    //     email,
+    //     totp,
+    //   });
+    //   const data = res.data;
+
+    //   localStorage.setItem("token", data.token);
+    //   localStorage.setItem("twoFatEnabled", data.twoFatEnabled);
+    //   localStorage.setItem("image", data.image);
+    //   router.push("/");
+    // } catch (error) {
+    //   toast.error(error.response.data.error);
+    //   return;
+    // }
   }
 
   const toggleVisibility = () => setIsVisible(!isVisible);
@@ -134,7 +149,7 @@ export default function Login() {
         </ModalContent>
       </Modal>
 
-      <Card className="max-w-[400px] mx-auto my-40">
+      <Card className="max-w-[400px] mx-auto my-32">
         <CardHeader>
           <UsersIcon className="w-8 h-8" />
           <Spacer x={2} />

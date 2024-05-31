@@ -13,6 +13,7 @@ const useStore = create(
       twoFactorEnabled: false,
       setTwoFactorEnabled: (twoFactorEnabled) => set({ twoFactorEnabled }),
       removeTwoFactorEnabled: () => set({ twoFactorEnabled: false }),
+      twoFactorImage: "",
     }),
     {
       name: "secure-software-development",

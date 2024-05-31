@@ -84,6 +84,6 @@ func Register(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"message": "registered",
+		"message": "registered successfully",
 	})
 }

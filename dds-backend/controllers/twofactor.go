@@ -23,15 +23,15 @@ func Enable2FA(ctx *gin.Context) {
 
 	if user.TwoFactorEnabled {
 		ctx.JSON(http.StatusOK, gin.H{
-			"message":       "2FA enabled",
-			"twoFatEnabled": user.TwoFactorEnabled,
-			"image":         user.TwoFactor.ImageBase64,
+			"message":          "2FA enabled",
+			"twoFactorEnabled": user.TwoFactorEnabled,
+			"twoFactorImage":   user.TwoFactor.ImageBase64,
 		})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"twoFatEnabled": user.TwoFactorEnabled,
+		"twoFactorEnabled": user.TwoFactorEnabled,
 	})
 }
 
@@ -82,10 +82,10 @@ func Verify2FA(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"message":       "logged in",
-		"token":         token,
-		"twoFatEnabled": user.TwoFactorEnabled,
-		"image":         user.TwoFactor.ImageBase64,
+		"message":          "logged in",
+		"token":            token,
+		"twoFactorEnabled": user.TwoFactorEnabled,
+		"twoFactorImage":   user.TwoFactor.ImageBase64,
 	})
 
 }
