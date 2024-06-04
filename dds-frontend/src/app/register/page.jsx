@@ -9,6 +9,7 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  DateInput,
   Divider,
   Input,
   Modal,
@@ -81,7 +82,7 @@ export default function Login() {
   return (
     <main>
       <Toaster position="top-right" />
-      <Card className="max-w-[400px] mx-auto my-32">
+      <Card className="max-w-[400px] mx-auto my-4">
         <CardHeader>
           <UsersIcon className="w-8 h-8" />
           <Spacer x={2} />
@@ -92,6 +93,20 @@ export default function Login() {
         </CardHeader>
         <Divider />
         <CardBody>
+          <Input
+          label="First Name"
+          placeholder="Enter your first name"
+          isRequired
+          />
+          <Spacer y={4} />
+          <Input
+          label="Last Name"
+          placeholder="Enter your last name"
+            isRequired
+          />
+          <Spacer y={4} />
+          <DateInput label="Date of Birth" />
+          <Spacer y={4} />
           <Input
             isInvalid={!validateEmail(email)}
             isClearable

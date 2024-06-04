@@ -42,7 +42,7 @@ export default function HeaderNavbar() {
         <>
           <NavbarContent justify="center">
             <NavbarItem>
-              <Link href="/home">Home</Link>
+              <Link href="/">Home</Link>
             </NavbarItem>
             <NavbarItem>
               <Link href="/profile">Profile</Link>

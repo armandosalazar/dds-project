@@ -3,17 +3,14 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 const useStore = create(
   persist(
-    (set) => ({
+    (set, get) => ({
       token: "",
       setToken: (token) => set({ token }),
-      removeToken: () => set({ token: "" }),
+      getToken: () => get().token,
       email: "",
-      setEmail: (email) => set({ email }),
-      removeEmail: () => set({ email: "" }),
       twoFactorEnabled: false,
-      setTwoFactorEnabled: (twoFactorEnabled) => set({ twoFactorEnabled }),
-      removeTwoFactorEnabled: () => set({ twoFactorEnabled: false }),
       twoFactorImage: "",
+      isLogged: false,
     }),
     {
       name: "secure-software-development",

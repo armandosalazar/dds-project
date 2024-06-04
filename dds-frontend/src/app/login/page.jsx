@@ -75,7 +75,7 @@ export default function Login() {
         useStore.setState({ email: res.data.email });
         setTwoFactorEnabled(res.data.twoFactorEnabled);
         toast.success(res.data.message);
-        router.push("/home");
+        router.push("/");
       }
     } catch (err) {
       toast.error(err.response.data.error);
@@ -98,21 +98,6 @@ export default function Login() {
     } catch (error) {
       toast.error(error.response.data.error);
     }
-    // try {
-    //   const res = await axios.post("http://localhost:8080/api/verify-2fa", {
-    //     email,
-    //     totp,
-    //   });
-    //   const data = res.data;
-
-    //   localStorage.setItem("token", data.token);
-    //   localStorage.setItem("twoFatEnabled", data.twoFatEnabled);
-    //   localStorage.setItem("image", data.image);
-    //   router.push("/");
-    // } catch (error) {
-    //   toast.error(error.response.data.error);
-    //   return;
-    // }
   }
 
   const toggleVisibility = () => setIsVisible(!isVisible);
