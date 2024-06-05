@@ -93,7 +93,7 @@ export default function Login() {
         </CardHeader>
         <Divider />
         <CardBody>
-          <Input
+          {/* <Input
           label="First Name"
           placeholder="Enter your first name"
           isRequired
@@ -106,7 +106,7 @@ export default function Login() {
           />
           <Spacer y={4} />
           <DateInput label="Date of Birth" />
-          <Spacer y={4} />
+          <Spacer y={4} /> */}
           <Input
             isInvalid={!validateEmail(email)}
             isClearable

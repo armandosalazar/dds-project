@@ -33,4 +33,36 @@ func GenerateTables() {
 
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.TwoFactor{})
+	db.AutoMigrate(&models.Role{})
+
+	var count int64
+	db.Find(&models.Role{}).Count(&count)
+
+	if count == 0 {
+		createRoles(db)
+	}
+
+}
+
+func createRoles(db *gorm.DB) {
+	role := models.Role{
+		ID:   1,
+		Name: "admin",
+	}
+
+	db.Create(&role)
+
+	role = models.Role{
+		ID:   2,
+		Name: "user",
+	}
+
+	db.Create(&role)
+
+	role = models.Role{
+		ID:   3,
+		Name: "guest",
+	}
+
+	db.Create(&role)
 }

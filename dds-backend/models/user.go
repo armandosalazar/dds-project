@@ -7,11 +7,16 @@ import (
 
 type User struct {
 	gorm.Model
-	Email            string `gorm:"size:255;not null;unique" json:"email"`
-	Password         string `gorm:"size:255;not null" json:"password"`
-	TwoFactorEnabled bool   `json:"two_factor_enabled"`
-	TwoFactorID      uint   `json:"two_factor_id"`
-	TwoFactor        TwoFactor
+	Email    string `gorm:"size:255;not null;unique" json:"email"`
+	Password string `gorm:"size:255;not null" json:"password"`
+	// relationship
+	RoleID uint `json:"role_id"`
+	Role   Role
+	// two factor
+	TwoFactorEnabled bool `json:"two_factor_enabled"`
+	// relationship
+	TwoFactorID uint `json:"two_factor_id"`
+	TwoFactor   TwoFactor
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {

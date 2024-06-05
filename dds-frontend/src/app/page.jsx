@@ -13,7 +13,7 @@ export default function Home() {
 
   function verifyAuth() {
     if (!isLoggedIn) {
-      router.push("/auth");
+      router.push("/login");
     }
   }
 
