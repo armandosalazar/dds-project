@@ -17,6 +17,8 @@ type User struct {
 	// relationship
 	TwoFactorID uint `json:"two_factor_id"`
 	TwoFactor   TwoFactor
+	// relationship
+	Products []Product `json:"products"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {

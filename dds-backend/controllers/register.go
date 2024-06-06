@@ -76,6 +76,8 @@ func Register(ctx *gin.Context) {
 
 	user.TwoFactorID = twoFactor.ID
 
+	user.RoleID = 2
+
 	if err := db.Create(&user).Error; err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

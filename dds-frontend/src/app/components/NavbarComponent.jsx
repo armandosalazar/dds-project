@@ -15,19 +15,18 @@ import { useRouter } from "next/navigation";
 export default function NavbarComponent() {
   /* Hooks */
   const [isAuth, setIsAuth] = useState(false);
-  /* Store */
-  const { token, removeToken } = useStore();
   /* Router */
   const router = useRouter();
 
   useEffect(() => {
     setIsAuth(verifyAuth());
+    console.log("isAuth", isAuth);
   });
 
-  const verifyAuth = () => token !== "";
+  const verifyAuth = () => useStore.getState().token !== "";
 
   function handleLogout() {
-    removeToken();
+    useStore.setState({ token: "" });
     router.push("/");
   }
 

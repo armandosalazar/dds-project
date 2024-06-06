@@ -34,6 +34,7 @@ func GenerateTables() {
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.TwoFactor{})
 	db.AutoMigrate(&models.Role{})
+	db.AutoMigrate(&models.Product{})
 
 	var count int64
 	db.Find(&models.Role{}).Count(&count)
@@ -46,21 +47,18 @@ func GenerateTables() {
 
 func createRoles(db *gorm.DB) {
 	role := models.Role{
-		ID:   1,
 		Name: "admin",
 	}
 
 	db.Create(&role)
 
 	role = models.Role{
-		ID:   2,
 		Name: "user",
 	}
 
 	db.Create(&role)
 
 	role = models.Role{
-		ID:   3,
 		Name: "guest",
 	}
 

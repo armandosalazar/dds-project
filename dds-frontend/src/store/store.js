@@ -3,14 +3,11 @@ import { createJSONStorage, persist } from "zustand/middleware";
 
 const useStore = create(
   persist(
-    (set, get) => ({
+    (_set, _get) => ({
       token: "",
-      setToken: (token) => set({ token }),
-      getToken: () => get().token,
       email: "",
       twoFactorEnabled: false,
       twoFactorImage: "",
-      isLogged: false,
     }),
     {
       name: "secure-software-development",

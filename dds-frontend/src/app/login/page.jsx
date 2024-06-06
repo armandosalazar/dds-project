@@ -42,7 +42,6 @@ export default function Login() {
   /* Regex */
   const validateEmail = (email) =>
     email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
-
   const validatePassword = (password) =>
     password.match(
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
@@ -62,23 +61,24 @@ export default function Login() {
         return;
       }
 
-      const res = await axiosHttp.post("/api/login", {
+      const response = await axiosHttp.post("/api/login", {
         email,
         password,
       });
 
-      if (res.data.twoFactorEnabled) {
-        setTwoFactorEnabled(res.data.twoFactorEnabled);
-        setIsOpen(true);
+      if (response.data.twoFactorEnabled) {
+        useStore.setState({ twoFactorEnabled: response.data.twoFactorEnabled });
+        setIsOpen(response.data.twoFactorEnabled);
       } else {
-        setToken(res.data.token);
-        useStore.setState({ email: res.data.email });
-        setTwoFactorEnabled(res.data.twoFactorEnabled);
-        toast.success(res.data.message);
+        useStore.setState({ email: response.data.email });
+        useStore.setState({ token: response.data.token });
+        setIsOpen(response.data.twoFactorEnabled);
+        toast.success(response.data.message);
         router.push("/");
       }
-    } catch (err) {
-      toast.error(err.response.data.error);
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response.data.error);
     }
   }
 
