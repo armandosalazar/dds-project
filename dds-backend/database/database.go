@@ -34,7 +34,7 @@ func GenerateTables() {
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.TwoFactor{})
 	db.AutoMigrate(&models.Role{})
-	db.AutoMigrate(&models.Product{})
+	db.AutoMigrate(&models.Post{})
 
 	var count int64
 	db.Find(&models.Role{}).Count(&count)

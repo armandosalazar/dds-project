@@ -51,7 +51,7 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
-	token, err := token.GenerateToken(user.Email)
+	token, err := token.GenerateToken(user.ID, user.Email)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
@@ -63,7 +63,7 @@ func Login(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"message":          "login successful",
 		"token":            token,
-		"email":            user.Email,
+		"role":             user.RoleID,
 		"twoFactorEnabled": user.TwoFactorEnabled,
 	})
 }

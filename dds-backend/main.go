@@ -18,16 +18,17 @@ func main() {
 
 	database.GenerateTables()
 
-	router := gin.Default()
-	router.Use(config.Cors())
+	r := gin.Default()
+	r.Use(config.Cors())
 
-	api := router.Group("/api")
+	api := r.Group("/api")
 
 	api.POST("/register", controllers.Register)
 	api.POST("/login", controllers.Login)
 	api.POST("/verify-2fa", controllers.Verify2FA)
-	api.Use(middleware.AuthMiddleware())
-	api.GET("/enable-2fa", controllers.Enable2FA)
+	api.GET("/enable-2fa", middleware.AuthMiddleware(), controllers.Enable2FA)
+	api.POST("/posts", controllers.CreatePost)
+	api.GET("/posts", controllers.GetPosts)
 
-	router.Run(":8080")
+	r.Run(":8080")
 }

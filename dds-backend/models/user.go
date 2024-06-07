@@ -7,6 +7,7 @@ import (
 
 type User struct {
 	gorm.Model
+	Id       uint   `json:"id"`
 	Email    string `gorm:"size:255;not null;unique" json:"email"`
 	Password string `gorm:"size:255;not null" json:"password"`
 	// relationship
@@ -18,7 +19,7 @@ type User struct {
 	TwoFactorID uint `json:"two_factor_id"`
 	TwoFactor   TwoFactor
 	// relationship
-	Products []Product `json:"products"`
+	Posts []Post `json:"posts"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
