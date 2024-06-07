@@ -4,10 +4,10 @@ import { createJSONStorage, persist } from "zustand/middleware";
 const useStore = create(
   persist(
     (_set, _get) => ({
-      token: "",
-      email: "",
-      twoFactorEnabled: false,
-      twoFactorImage: "",
+      token: undefined,
+      role: undefined,
+      twoFactorEnabled: undefined,
+      twoFactorImage: undefined,
     }),
     {
       name: "secure-software-development",

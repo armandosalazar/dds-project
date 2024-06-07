@@ -25,6 +25,7 @@ import { UsersIcon } from "@heroicons/react/24/outline";
 import useStore from "../../store/store";
 import { EyeFilledIcon } from "../icons/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "../icons/EyeSlashFilledIcon";
+import Navbar from "../components/Navbar";
 
 export default function Login() {
   /* Hooks */
@@ -67,20 +68,19 @@ export default function Login() {
         email,
         password,
       });
-      
+
       toast.success(res.data.message);
       toast.success("now you can login");
-
     } catch (err) {
       toast.error(err.response.data.error);
     }
   }
 
-
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
     <main>
+      <Navbar />
       <Toaster position="top-right" />
       <Card className="max-w-[400px] mx-auto my-4">
         <CardHeader>

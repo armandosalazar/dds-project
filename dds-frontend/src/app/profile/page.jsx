@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import useStore from "../../store/store";
 import axiosHttp from "../../utils/axiosConfig";
 import toast, { Toaster } from "react-hot-toast";
+import Navbar from "../components/Navbar";
 
 export default function Profile() {
   /* Router */
@@ -45,6 +46,7 @@ export default function Profile() {
 
   return (
     <main className="container mx-auto">
+      <Navbar />
       <Toaster position="top-right" />
       <section className="p-4">
         <h2 className="font-bold">Profile</h2>

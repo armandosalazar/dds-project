@@ -1,41 +1,102 @@
 "use client";
-import { useEffect } from "react";
+
+import { useEffect, useState } from "react";
 import useStore from "../store/store";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Divider,
+  Input,
+  Spacer,
+} from "@nextui-org/react";
+import axiosHttp from "../utils/axiosConfig";
+import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import Loading from "./components/Loading";
+import Navbar from "./components/Navbar";
 
 export default function Home() {
   const router = useRouter();
-  const isLoggedIn = useStore.getState().token !== "";
+  const [posts, setPosts] = useState([]);
+  const [content, setContent] = useState("");
+  const [isLogged, setIsLogged] = useState(false);
 
   useEffect(() => {
-    verifyAuth();
+    function verifySession() {
+      const token = useStore.getState().token;
+      setIsLogged(token !== undefined);
+
+      if (!token) {
+        router.push("/login");
+      }
+    }
+
+    verifySession();
+    handleGetPosts();
   }, []);
 
-  function verifyAuth() {
-    if (!isLoggedIn) {
-      router.push("/login");
+  async function handleGetPosts() {
+    try {
+      const response = await axiosHttp.get("/api/posts");
+
+      setPosts(response.data.posts);
+    } catch (error) {
+      toast.error(error.response.data.error);
+      // toast.error("An error occurred while fetching the posts.");
+      console.error(error);
+    }
+  }
+
+  async function handleCreatePost() {
+    try {
+      const response = await axiosHttp.post("/api/posts", { content: content });
+
+      toast.success(response.data.message);
+
+      setContent("");
+      handleGetPosts();
+    } catch (error) {
+      // toast.error("An error occurred while creating the post.");
+      // console.error(error);
+      toast.error(error.response.data.error);
     }
   }
 
   return (
     <main className="container mx-auto">
-      {isLoggedIn && (
-        <section>
-          <h1 className="text-xl font-bold">
-            Welcome {useStore((state) => state.email)} to the Secure Software
-            Development!
-          </h1>
-          <p>
-            Secure software development is the process of developing software in
-            a way that protects it from security vulnerabilities and threats.
-            This involves identifying potential security risks, implementing
-            security controls, and testing the software to ensure that it is
-            secure. Secure software development is essential for protecting
-            sensitive data, preventing cyber attacks, and maintaining the trust
-            of users. In this guide, we will explore best practices, frameworks,
-            and resources for secure software development.
-          </p>
-        </section>
+      <Navbar />
+      <Toaster />
+      {isLogged && (
+        <>
+          <section className="w-1/2 mx-auto">
+            <Spacer y={4} />
+            <article className="flex items-center">
+              <Input
+                placeholder="What's on your mind?"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+              />
+              <Spacer x={4} />
+              <Button color="primary" onClick={handleCreatePost}>
+                Post
+              </Button>
+            </article>
+            <Spacer y={4} />
+          </section>
+          <section>
+            {posts.map((post, index) => (
+              <article key={index}>
+                <Card>
+                  {/* <CardHeader>{post.user.email}</CardHeader> */}
+                  <CardBody>{post.content}</CardBody>
+                </Card>
+                <Spacer y={2} />
+              </article>
+            ))}
+          </section>
+        </>
       )}
     </main>
   );

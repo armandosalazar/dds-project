@@ -24,6 +24,7 @@ import { UsersIcon } from "@heroicons/react/24/outline";
 import useStore from "../../store/store";
 import { EyeFilledIcon } from "../icons/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "../icons/EyeSlashFilledIcon";
+import Navbar from "../components/Navbar";
 
 export default function Login() {
   /* Hooks */
@@ -68,10 +69,12 @@ export default function Login() {
 
       if (response.data.twoFactorEnabled) {
         useStore.setState({ twoFactorEnabled: response.data.twoFactorEnabled });
+
         setIsOpen(response.data.twoFactorEnabled);
       } else {
-        useStore.setState({ email: response.data.email });
         useStore.setState({ token: response.data.token });
+        useStore.setState({ role: response.data.role });
+
         setIsOpen(response.data.twoFactorEnabled);
         toast.success(response.data.message);
         router.push("/");
@@ -133,6 +136,7 @@ export default function Login() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <Navbar />
 
       <Card className="max-w-[400px] mx-auto my-32">
         <CardHeader>

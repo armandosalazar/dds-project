@@ -1,48 +1,61 @@
 "use client";
 
 import {
-  Navbar,
+  Navbar as Nav,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
   Button,
 } from "@nextui-org/react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import useStore from "../../store/store";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-export default function NavbarComponent() {
-  /* Hooks */
-  const [isAuth, setIsAuth] = useState(false);
-  /* Router */
+export default function Navbar() {
   const router = useRouter();
+  const [isLogged, setIsLogged] = useState(false);
 
   useEffect(() => {
-    setIsAuth(verifyAuth());
-    console.log("isAuth", isAuth);
-  });
+    function verifySession() {
+      const token = useStore.getState().token;
+      setIsLogged(token !== undefined);
+    }
 
-  const verifyAuth = () => useStore.getState().token !== "";
+    console.log("Navbar useEffect");
+
+    verifySession();
+  }, []);
 
   function handleLogout() {
-    useStore.setState({ token: "" });
-    router.push("/");
+    useStore.setState({ token: undefined });
+    useStore.setState({ role: undefined });
+    useStore.setState({ twoFactorEnabled: undefined });
+    useStore.setState({ twoFactorImage: undefined });
+
+    setIsLogged(false);
+
+    router.push("/login");
   }
 
   return (
-    <Navbar>
+    <Nav>
       <NavbarBrand>
         <Link href="/">
           <span className="font-bold">Secure Software Development</span>
         </Link>
       </NavbarBrand>
-      {isAuth && (
+      {isLogged && (
         <>
           <NavbarContent justify="center">
             <NavbarItem>
               <Link href="/">Home</Link>
             </NavbarItem>
+            {useStore.getState().role === 1 && (
+              <NavbarItem>
+                <Link href="/admin">Admin</Link>
+              </NavbarItem>
+            )}
             <NavbarItem>
               <Link href="/profile">Profile</Link>
             </NavbarItem>
@@ -56,7 +69,7 @@ export default function NavbarComponent() {
           </NavbarContent>
         </>
       )}
-      {!isAuth && (
+      {!isLogged && (
         <NavbarContent justify="end">
           <NavbarItem>
             <Button
@@ -78,6 +91,6 @@ export default function NavbarComponent() {
           </NavbarItem>
         </NavbarContent>
       )}
-    </Navbar>
+    </Nav>
   );
 }
