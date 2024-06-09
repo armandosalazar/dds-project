@@ -3,7 +3,6 @@ package controllers
 import (
 	"dds-backends/database"
 	"dds-backends/models"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -24,16 +23,13 @@ func CreatePost(c *gin.Context) {
 		return
 	}
 
-	userId := c.GetUint("id")
+	userID := c.GetUint("id")
 	email := c.GetString("email")
-
-	fmt.Println("email: ", email)
-	fmt.Println("userId: ", userId)
 
 	post := models.Post{
 		Title:   email,
 		Content: req.Content,
-		UserId:  userId,
+		UserID:  userID,
 	}
 
 	db := database.GetDbConnection()
