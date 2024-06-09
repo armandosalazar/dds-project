@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import useStore from "../../store/store";
 import axiosHttp from "../../utils/axiosConfig";
-import toast, { Toaster } from "react-hot-toast";
-import Navbar from "../components/Navbar";
+import toast from "react-hot-toast";
 
 export default function Profile() {
   /* Router */
@@ -45,9 +44,7 @@ export default function Profile() {
   }
 
   return (
-    <main className="container mx-auto">
-      <Navbar />
-      <Toaster position="top-right" />
+    <section className="w-1/2 mx-auto">
       <section className="p-4">
         <h2 className="font-bold">Profile</h2>
         <p>Manage your account settings.</p>
@@ -75,6 +72,6 @@ export default function Profile() {
           {twoFactorEnabled ? "Disable" : "Enable"} 2FA
         </Switch>
       </section>
-    </main>
+    </section>
   );
 }

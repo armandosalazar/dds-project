@@ -22,13 +22,12 @@ export default function Navbar() {
       setIsLogged(token !== undefined);
     }
 
-    console.log("Navbar useEffect");
-
     verifySession();
   }, []);
 
   function handleLogout() {
     useStore.setState({ token: undefined });
+    useStore.setState({ id: undefined });
     useStore.setState({ role: undefined });
     useStore.setState({ twoFactorEnabled: undefined });
     useStore.setState({ twoFactorImage: undefined });
@@ -53,7 +52,7 @@ export default function Navbar() {
             </NavbarItem>
             {useStore.getState().role === 1 && (
               <NavbarItem>
-                <Link href="/admin">Admin</Link>
+                <Link href="/admin">Manage</Link>
               </NavbarItem>
             )}
             <NavbarItem>

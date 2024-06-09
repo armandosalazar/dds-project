@@ -6,16 +6,21 @@ import {
   Button,
   Card,
   CardBody,
+  CardFooter,
   CardHeader,
   Divider,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Input,
   Spacer,
 } from "@nextui-org/react";
 import axiosHttp from "../utils/axiosConfig";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import Loading from "./components/Loading";
 import Navbar from "./components/Navbar";
+import { EllipsisHorizontalIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 export default function Home() {
   const router = useRouter();
@@ -24,17 +29,18 @@ export default function Home() {
   const [isLogged, setIsLogged] = useState(false);
 
   useEffect(() => {
-    function verifySession() {
+    async function verifySession() {
       const token = useStore.getState().token;
       setIsLogged(token !== undefined);
 
       if (!token) {
         router.push("/login");
+      } else {
+        await handleGetPosts();
       }
     }
 
     verifySession();
-    handleGetPosts();
   }, []);
 
   async function handleGetPosts() {
@@ -44,8 +50,6 @@ export default function Home() {
       setPosts(response.data.posts);
     } catch (error) {
       toast.error(error.response.data.error);
-      // toast.error("An error occurred while fetching the posts.");
-      console.error(error);
     }
   }
 
@@ -58,8 +62,6 @@ export default function Home() {
       setContent("");
       handleGetPosts();
     } catch (error) {
-      // toast.error("An error occurred while creating the post.");
-      // console.error(error);
       toast.error(error.response.data.error);
     }
   }
@@ -70,26 +72,54 @@ export default function Home() {
       <Toaster />
       {isLogged && (
         <>
-          <section className="w-1/2 mx-auto">
-            <Spacer y={4} />
-            <article className="flex items-center">
-              <Input
-                placeholder="What's on your mind?"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-              />
-              <Spacer x={4} />
-              <Button color="primary" onClick={handleCreatePost}>
-                Post
-              </Button>
-            </article>
-            <Spacer y={4} />
-          </section>
+          <Spacer y={4} />
+          <Card className="w-1/2 mx-auto">
+            <CardHeader>
+              <span className="font-bold">Create a post</span>
+            </CardHeader>
+            <Divider />
+            <CardBody>
+              <div className="flex">
+                <Input
+                  placeholder="What's on your mind?"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                />
+                <Spacer x={4} />
+                <Button color="primary" onClick={handleCreatePost}>
+                  Post
+                </Button>
+              </div>
+            </CardBody>
+            <Divider />
+            <CardFooter>
+              <span className="text-xs">
+                You can share your thoughts with the community.
+              </span>
+            </CardFooter>
+          </Card>
+          <Spacer y={4} />
           <section>
             {posts.map((post, index) => (
-              <article key={index}>
+              <article key={index} className="w-1/2 mx-auto">
                 <Card>
-                  {/* <CardHeader>{post.user.email}</CardHeader> */}
+                  <CardHeader className="flex justify-between">
+                    <span className="font-bold">{post.title}</span>
+                    {post.user_id === useStore.getState().id && (
+                      <>
+                        <Dropdown>
+                          <DropdownTrigger>
+                            <EllipsisHorizontalIcon className="w-5 h-5 cursor-pointer" />
+                          </DropdownTrigger>
+                          <DropdownMenu aria-label="Actions">
+                            <DropdownItem key="edit">Edit</DropdownItem>
+                            <DropdownItem key="delete">Delete</DropdownItem>
+                          </DropdownMenu>
+                        </Dropdown>
+                      </>
+                    )}
+                  </CardHeader>
+                  <Divider />
                   <CardBody>{post.content}</CardBody>
                 </Card>
                 <Spacer y={2} />

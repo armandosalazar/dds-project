@@ -73,6 +73,7 @@ export default function Login() {
         setIsOpen(response.data.twoFactorEnabled);
       } else {
         useStore.setState({ token: response.data.token });
+        useStore.setState({ id: response.data.id });
         useStore.setState({ role: response.data.role });
 
         setIsOpen(response.data.twoFactorEnabled);
@@ -80,7 +81,6 @@ export default function Login() {
         router.push("/");
       }
     } catch (error) {
-      console.error(error);
       toast.error(error.response.data.error);
     }
   }

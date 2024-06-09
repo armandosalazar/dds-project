@@ -5,6 +5,7 @@ const useStore = create(
   persist(
     (_set, _get) => ({
       token: undefined,
+      id: undefined,
       role: undefined,
       twoFactorEnabled: undefined,
       twoFactorImage: undefined,
