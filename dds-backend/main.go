@@ -29,7 +29,7 @@ func main() {
 	api.GET("/enable-2fa", middleware.AuthMiddleware(), controllers.Enable2FA)
 	api.POST("/posts", middleware.AuthMiddleware(), controllers.CreatePost)
 	api.GET("/posts", middleware.AuthMiddleware(), controllers.GetPosts)
-	api.GET("/users", controllers.GetUsers)
+	api.GET("/users", middleware.AuthMiddleware(), controllers.GetUsers)
 
 	r.Run(":8080")
 }
