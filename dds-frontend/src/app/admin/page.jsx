@@ -1,5 +1,14 @@
 "use client";
 import {
+  Button,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Select,
+  SelectItem,
   Spacer,
   Table,
   TableBody,
@@ -9,14 +18,23 @@ import {
   TableRow,
   Tooltip,
   getKeyValue,
+  useDisclosure,
 } from "@nextui-org/react";
 import React, { useState, useEffect } from "react";
 import axiosHttp from "../../utils/axiosConfig";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import toast from "react-hot-toast";
 
 export default function Admin() {
   const [users, setUsers] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState({});
+  const [isUserUpdated, setIsUserUpdated] = useState(false);
+  const roles = [
+    { value: "admin", id: 1 },
+    { value: "user", id: 2 },
+  ];
 
   useEffect(() => {
     function getUsers() {
@@ -64,21 +82,27 @@ export default function Admin() {
         return (
           <div className="flex">
             <Tooltip content="Edit user">
-              <PencilSquareIcon className="cursor-pointer w-5 h-5" />
+              <PencilSquareIcon
+                className="cursor-pointer w-5 h-5"
+                onClick={() => {
+                  setIsOpen(true);
+                  setUser(user);
+                  console.log(user);
+                }}
+              />
             </Tooltip>
             <Spacer x={1} />
             <Tooltip content="Delete user" color="danger">
               <TrashIcon
                 className="cursor-pointer w-5 h-5 text-red-500"
                 onClick={() => {
-                  console.log(user.id);
                   axiosHttp
                     .delete(`/api/users/${user.id}`)
                     .then((response) => {
-                      console.log(response.data.message);
+                      toast.success(response.data.message);
                     })
                     .catch((error) => {
-                      console.error(error);
+                      toast.error(error.response.data.error);
                     });
                 }}
               />
@@ -90,6 +114,66 @@ export default function Admin() {
 
   return (
     <section className="w-1/2 mx-auto">
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <ModalContent>
+          <ModalHeader>
+            <span className="text-xl font-bold">Edit User</span>
+          </ModalHeader>
+          <ModalBody>
+            <Input
+              readOnly={true}
+              label="Email"
+              value={user.email}
+              onValueChange={(value) =>
+                setUser((prev) => ({ ...prev, email: value }))
+              }
+            />
+            <Select
+              label="Role"
+              defaultSelectedKeys={[user.role]}
+              onSelectionChange={(keys) => {
+                setIsUserUpdated(keys.values().next().value !== user.role);
+              }}
+            >
+              {roles.map((role) => (
+                <SelectItem key={role.value}>{role.value}</SelectItem>
+              ))}
+            </Select>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="danger"
+              variant="light"
+              onClick={() => {
+                setIsOpen(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              isDisabled={!isUserUpdated}
+              color="primary"
+              onClick={() => {
+                axiosHttp
+                  .patch(`/api/users/${user.id}`, {
+                    roleId: roles.filter((role) => role.value === user.role)[0]
+                      .id,
+                  })
+                  .then((response) => {
+                    toast.success(response.data.message);
+                    console.log(response.data);
+                    setIsOpen(false);
+                  })
+                  .catch((error) => {
+                    toast.error(error.response.data.error);
+                  });
+              }}
+            >
+              Update
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <Spacer y={2} />
       <article>
         <Table aria-label="Users">
