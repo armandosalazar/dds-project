@@ -25,11 +25,16 @@ func main() {
 
 	api.POST("/register", controllers.Register)
 	api.POST("/login", controllers.Login)
+
 	api.POST("/verify-2fa", controllers.Verify2FA)
 	api.GET("/enable-2fa", middleware.AuthMiddleware(), controllers.Enable2FA)
+
 	api.POST("/posts", middleware.AuthMiddleware(), controllers.CreatePost)
 	api.GET("/posts", middleware.AuthMiddleware(), controllers.GetPosts)
+
 	api.GET("/users", middleware.AuthMiddleware(), controllers.GetUsers)
+	api.PATCH("/users/:id", middleware.AuthMiddleware(), controllers.UpdateUser)
+	api.DELETE("/users/:id", middleware.AuthMiddleware(), middleware.RoleAdmin(), controllers.DeleteUser)
 
 	r.Run(":8080")
 }

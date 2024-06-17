@@ -35,5 +35,58 @@ func GetUsers(ctx *gin.Context) {
 	sqlDB, _ := db.DB()
 
 	sqlDB.Close()
+}
 
+type UpdateUserRequest struct {
+	RoleID uint `json:"roleId"`
+}
+
+func UpdateUser(ctx *gin.Context) {
+	var req UpdateUserRequest
+
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	id := ctx.Param("id")
+
+	db := database.GetDbConnection()
+
+	if err := db.Exec("UPDATE users SET role_id = ? WHERE id = ?", req.RoleID, id).Error; err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "User updated",
+	})
+
+	sqlDB, _ := db.DB()
+	sqlDB.Close()
+}
+
+func DeleteUser(ctx *gin.Context) {
+	id := ctx.Param("id")
+
+	db := database.GetDbConnection()
+
+	if err := db.Exec("DELETE FROM users WHERE id = ?", id).Error; err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "User deleted",
+	})
+
+	sqlDB, _ := db.DB()
+
+	sqlDB.Close()
 }

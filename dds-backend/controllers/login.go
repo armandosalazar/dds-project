@@ -46,7 +46,7 @@ func Login(ctx *gin.Context) {
 	if user.TwoFactorEnabled {
 		ctx.JSON(http.StatusOK, gin.H{
 			"message":          "two factor enabled",
-			"twoFactorEnabled": true,
+			"twoFactorEnabled": user.TwoFactorEnabled,
 		})
 		return
 	}
@@ -60,11 +60,18 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
+	var role string
+
+	if user.RoleID == 1 {
+		role = "admin"
+	} else {
+		role = "user"
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"message":          "login successful",
 		"token":            token,
-		"id":               user.ID,
-		"role":             user.RoleID,
+		"role":             role,
 		"twoFactorEnabled": user.TwoFactorEnabled,
 	})
 }

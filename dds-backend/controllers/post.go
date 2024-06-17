@@ -46,12 +46,18 @@ func CreatePost(c *gin.Context) {
 	})
 }
 
+type PostAPI struct {
+	ID      uint   `json:"id"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
+}
+
 func GetPosts(c *gin.Context) {
-	var posts []models.Post
+	var posts []PostAPI
 
 	db := database.GetDbConnection()
 
-	if err := db.Find(&posts).Error; err != nil {
+	if err := db.Table("posts").Find(&posts).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})

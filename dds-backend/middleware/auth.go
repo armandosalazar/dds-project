@@ -2,26 +2,9 @@ package middleware
 
 import (
 	"dds-backends/utils/token"
-	"log"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
-
-func LoggerMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		// Antes de procesar la solicitud
-		t := time.Now()
-
-		// Procesar la solicitud
-		c.Next()
-
-		// Después de procesar la solicitud
-		latency := time.Since(t)
-		status := c.Writer.Status()
-		log.Printf("Status: %d | Latency: %v | Path: %s", status, latency, c.Request.URL.Path)
-	}
-}
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
