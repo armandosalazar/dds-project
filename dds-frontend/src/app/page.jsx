@@ -19,7 +19,7 @@ import {
 import axiosHttp from "../utils/axiosConfig";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import Navbar from "./components/Navbar";
+import Navbar from "@/components/Navbar";
 import { EllipsisHorizontalIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 export default function Home() {

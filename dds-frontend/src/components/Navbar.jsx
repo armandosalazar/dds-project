@@ -8,7 +8,7 @@ import {
   Button,
 } from "@nextui-org/react";
 import Link from "next/link";
-import useStore from "../../store/store";
+import useStore from "@/store/store";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -27,7 +27,6 @@ export default function Navbar() {
 
   function handleLogout() {
     useStore.setState({ token: undefined });
-    useStore.setState({ id: undefined });
     useStore.setState({ role: undefined });
     useStore.setState({ twoFactorEnabled: undefined });
     useStore.setState({ twoFactorImage: undefined });
@@ -50,7 +49,7 @@ export default function Navbar() {
             <NavbarItem>
               <Link href="/">Home</Link>
             </NavbarItem>
-            {useStore.getState().role === 1 && (
+            {useStore.getState().role === "admin" && (
               <NavbarItem>
                 <Link href="/admin">Manage</Link>
               </NavbarItem>

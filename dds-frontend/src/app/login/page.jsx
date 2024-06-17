@@ -24,7 +24,6 @@ import { UsersIcon } from "@heroicons/react/24/outline";
 import useStore from "../../store/store";
 import { EyeFilledIcon } from "../icons/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "../icons/EyeSlashFilledIcon";
-import Navbar from "../components/Navbar";
 
 export default function Login() {
   /* Hooks */
@@ -73,7 +72,6 @@ export default function Login() {
         setIsOpen(response.data.twoFactorEnabled);
       } else {
         useStore.setState({ token: response.data.token });
-        useStore.setState({ id: response.data.id });
         useStore.setState({ role: response.data.role });
 
         setIsOpen(response.data.twoFactorEnabled);
@@ -107,7 +105,6 @@ export default function Login() {
 
   return (
     <main>
-      <Toaster position="top-right" />
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <ModalContent>
           <ModalHeader>Two Factor</ModalHeader>
@@ -136,7 +133,6 @@ export default function Login() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <Navbar />
 
       <Card className="max-w-[400px] mx-auto my-32">
         <CardHeader>

@@ -9,23 +9,16 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
-  DateInput,
   Divider,
   Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
   Spacer,
 } from "@nextui-org/react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import Link from "next/link";
 import { UsersIcon } from "@heroicons/react/24/outline";
 import useStore from "../../store/store";
 import { EyeFilledIcon } from "../icons/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "../icons/EyeSlashFilledIcon";
-import Navbar from "../components/Navbar";
 
 export default function Login() {
   /* Hooks */
@@ -80,8 +73,6 @@ export default function Login() {
 
   return (
     <main>
-      <Navbar />
-      <Toaster position="top-right" />
       <Card className="max-w-[400px] mx-auto my-4">
         <CardHeader>
           <UsersIcon className="w-8 h-8" />
