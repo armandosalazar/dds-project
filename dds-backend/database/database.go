@@ -20,9 +20,10 @@ func GetDbConnection() *gorm.DB {
 	dbUrl := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&collation=utf8mb4_unicode_ci&parseTime=True&loc=Local", dbUser, dbPassword, dbHost, dbPort, dbName)
 
 	db, err := gorm.Open(mysql.Open(dbUrl), &gorm.Config{
+		QueryFields:    true,
 		NamingStrategy: schema.NamingStrategy{
-			SingularTable: true,
-			NoLowerCase:   false,
+			// SingularTable: true,
+			// NoLowerCase:   false,
 		},
 	})
 
