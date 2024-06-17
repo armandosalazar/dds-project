@@ -44,16 +44,14 @@ export default function Admin() {
   }, []);
 
   const userColumns = [
-    { key: "ID", label: "ID" },
-    { key: "Email", label: "Email" },
-    { key: "RoleID", label: "Role" },
-    { key: "CreatedAt", label: "Created At" },
-    { key: "UpdatedAt", label: "Updated At" },
+    { key: "id", label: "ID" },
+    { key: "email", label: "Email" },
+    { key: "role", label: "Role" },
     { key: "actions", label: "Actions" },
   ];
 
   return (
-    <section>
+    <section className="w-1/2 mx-auto">
       <Spacer y={2} />
       <article>
         <Table aria-label="Users">
