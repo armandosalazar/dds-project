@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import {
@@ -73,6 +73,7 @@ export default function Login() {
       } else {
         useStore.setState({ token: response.data.token });
         useStore.setState({ role: response.data.role });
+        useStore.setState({ email: email });
 
         setIsOpen(response.data.twoFactorEnabled);
         toast.success(response.data.message);

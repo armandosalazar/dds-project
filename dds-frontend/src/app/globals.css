@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.css-dip3t8 {
+  background-color: white !important;
+}

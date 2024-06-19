@@ -44,7 +44,7 @@ export default function Profile() {
   }
 
   return (
-    <section className="w-1/2 mx-auto">
+    <section className="m-4 w-full">
       <section className="p-4">
         <h2 className="font-bold">Profile</h2>
         <p>Manage your account settings.</p>

@@ -50,6 +50,7 @@ type PostAPI struct {
 	ID      uint   `json:"id"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
+	UserID  uint   `json:"userId"`
 }
 
 func GetPosts(c *gin.Context) {
@@ -57,7 +58,7 @@ func GetPosts(c *gin.Context) {
 
 	db := database.GetDbConnection()
 
-	if err := db.Table("posts").Find(&posts).Error; err != nil {
+	if err := db.Table("posts").Order("id DESC").Find(&posts).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
@@ -67,6 +68,9 @@ func GetPosts(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"posts": posts,
 	})
+
+	sqlDB, _ := db.DB()
+	sqlDB.Close()
 }
 
 func GetPostsByUserId(c *gin.Context) {

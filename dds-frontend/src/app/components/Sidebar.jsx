@@ -1,14 +1,22 @@
 "use client";
 
+import useStore from "@/store/store";
 import {
   AdjustmentsHorizontalIcon,
   HomeIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Menu, MenuItem, Sidebar as Side } from "react-pro-sidebar";
 
 export default function Sidebar() {
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    setIsAdmin(useStore.getState().role === "admin");
+  });
+
   return (
     <Side
       rootStyles={{
@@ -38,12 +46,14 @@ export default function Sidebar() {
         >
           Profile
         </MenuItem>
-        <MenuItem
-          icon={<AdjustmentsHorizontalIcon className="h-6 w-6" />}
-          component={<Link href="/admin" />}
-        >
-          Manage
-        </MenuItem>
+        {isAdmin && (
+          <MenuItem
+            icon={<AdjustmentsHorizontalIcon className="h-6 w-6" />}
+            component={<Link href="/admin" />}
+          >
+            Manage
+          </MenuItem>
+        )}
       </Menu>
     </Side>
   );

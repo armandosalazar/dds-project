@@ -8,6 +8,7 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  Chip,
   Divider,
   Dropdown,
   DropdownItem,
@@ -20,7 +21,11 @@ import axiosHttp from "../utils/axiosConfig";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import Navbar from "@/app/components/Navbar";
-import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
+import {
+  CommandLineIcon,
+  EllipsisHorizontalIcon,
+  HeartIcon,
+} from "@heroicons/react/24/outline";
 import Sidebar from "@/app/components/Sidebar";
 
 export default function Home() {
@@ -76,7 +81,7 @@ export default function Home() {
         <Sidebar />
         {isLogged && (
           <article className="w-full">
-            <Card>
+            <Card className="m-4">
               <CardHeader>
                 <span className="font-bold">Create a post</span>
               </CardHeader>
@@ -87,6 +92,11 @@ export default function Home() {
                     placeholder="What's on your mind?"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleCreatePost();
+                      }
+                    }}
                   />
                   <Spacer x={4} />
                   <Button color="primary" onClick={handleCreatePost}>
@@ -103,12 +113,19 @@ export default function Home() {
             </Card>
             <section>
               {posts.map((post, index) => (
-                <article key={index} className="w-1/2 mx-auto">
+                <article key={index} className="m-4">
                   <Card>
                     <CardHeader className="flex justify-between">
+                      <Chip
+                        color={post.userId > 0 ? "success" : "danger"}
+                        size="sm"
+                        variant="flat"
+                      >
+                        {post.userId > 0 ? "Active" : "Inactive"}
+                      </Chip>
                       <span className="font-bold">{post.title}</span>
-                      {post.user_id === useStore.getState().id && (
-                        <>
+                      {post.title === useStore.getState().email ? (
+                        <section>
                           <Dropdown>
                             <DropdownTrigger>
                               <EllipsisHorizontalIcon className="w-5 h-5 cursor-pointer" />
@@ -118,11 +135,19 @@ export default function Home() {
                               <DropdownItem key="delete">Delete</DropdownItem>
                             </DropdownMenu>
                           </Dropdown>
-                        </>
+                        </section>
+                      ) : (
+                        <section></section>
                       )}
                     </CardHeader>
                     <Divider />
                     <CardBody>{post.content}</CardBody>
+                    <Divider />
+                    <CardFooter>
+                      <span className="text-xs">
+                        <CommandLineIcon className="w-4 h-4" />
+                      </span>
+                    </CardFooter>
                   </Card>
                   <Spacer y={2} />
                 </article>

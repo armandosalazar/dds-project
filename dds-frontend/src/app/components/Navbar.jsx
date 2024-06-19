@@ -29,6 +29,7 @@ export default function Navbar() {
   function handleLogout() {
     useStore.setState({ token: undefined });
     useStore.setState({ role: undefined });
+    useStore.setState({ email: undefined });
     useStore.setState({ twoFactorEnabled: undefined });
     useStore.setState({ twoFactorImage: undefined });
 
@@ -38,7 +39,7 @@ export default function Navbar() {
   }
 
   return (
-    <Nav>
+    <Nav isBordered>
       <NavbarBrand>
         <Link href="/">
           <span className="font-bold">Secure Software Development</span>

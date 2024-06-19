@@ -113,7 +113,7 @@ export default function Admin() {
   }, []);
 
   return (
-    <section className="w-1/2 mx-auto">
+    <section className="w-full m-4">
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <ModalContent>
           <ModalHeader>
@@ -181,7 +181,6 @@ export default function Admin() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <Spacer y={2} />
       <article>
         <Table aria-label="Users">
           <TableHeader columns={userColumns}>
