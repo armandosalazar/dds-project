@@ -14,7 +14,7 @@ type User struct {
 	TwoFactorEnabled bool
 	TwoFactorID      uint
 	TwoFactor        TwoFactor
-	Posts            []Post
+	Posts            []Post `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {

@@ -42,7 +42,7 @@ func CreatePost(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"product": post,
+		"message": "post created",
 	})
 }
 

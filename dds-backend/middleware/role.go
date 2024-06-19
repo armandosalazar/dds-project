@@ -20,13 +20,15 @@ func RoleAdmin() gin.HandlerFunc {
 			ctx.JSON(http.StatusNotFound, gin.H{
 				"error": "user not found",
 			})
+			ctx.Abort()
 			return
 		}
 
 		if user.RoleID != 1 {
 			ctx.JSON(http.StatusUnauthorized, gin.H{
-				"error": "Unauthorized",
+				"error": "unauthorized",
 			})
+			ctx.Abort()
 			return
 		}
 

@@ -64,10 +64,4 @@ func createRoles(db *gorm.DB) {
 	}
 
 	db.Create(&role)
-
-	role = models.Role{
-		Name: "guest",
-	}
-
-	db.Create(&role)
 }

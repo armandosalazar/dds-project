@@ -63,7 +63,7 @@ func UpdateUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"message": "User updated",
+		"message": "user updated",
 	})
 
 	sqlDB, _ := db.DB()
@@ -87,6 +87,5 @@ func DeleteUser(ctx *gin.Context) {
 	})
 
 	sqlDB, _ := db.DB()
-
 	sqlDB.Close()
 }

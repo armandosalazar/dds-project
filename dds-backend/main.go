@@ -33,7 +33,7 @@ func main() {
 	api.GET("/posts", middleware.AuthMiddleware(), controllers.GetPosts)
 
 	api.GET("/users", middleware.AuthMiddleware(), controllers.GetUsers)
-	api.PATCH("/users/:id", middleware.AuthMiddleware(), controllers.UpdateUser)
+	api.PATCH("/users/:id", middleware.AuthMiddleware(), middleware.RoleAdmin(), controllers.UpdateUser)
 	api.DELETE("/users/:id", middleware.AuthMiddleware(), middleware.RoleAdmin(), controllers.DeleteUser)
 
 	r.Run(":8080")
