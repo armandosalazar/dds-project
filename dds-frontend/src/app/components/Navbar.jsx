@@ -6,6 +6,7 @@ import {
   NavbarContent,
   NavbarItem,
   Button,
+  Divider,
 } from "@nextui-org/react";
 import Link from "next/link";
 import useStore from "@/store/store";

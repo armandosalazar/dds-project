@@ -1,5 +1,5 @@
 import { Toaster } from "react-hot-toast";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/app/components/Navbar";
 
 export default function Layout({ children }) {
   return (

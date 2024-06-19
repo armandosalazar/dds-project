@@ -37,32 +37,31 @@ export default function Admin() {
   ];
 
   useEffect(() => {
-    function getUsers() {
-      axiosHttp
-        .get("/api/users")
-        .then((response) => {
-          setUsers(response.data.users);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-
-    function getPosts() {
-      axiosHttp
-        .get("/api/posts")
-        .then((response) => {
-          setPosts(response.data.posts);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-
     getUsers();
     getPosts();
   }, []);
 
+  function getUsers() {
+    axiosHttp
+      .get("/api/users")
+      .then((response) => {
+        setUsers(response.data.users);
+      })
+      .catch((error) => {
+        toast.error(error.response.data.error);
+      });
+  }
+
+  function getPosts() {
+    axiosHttp
+      .get("/api/posts")
+      .then((response) => {
+        setPosts(response.data.posts);
+      })
+      .catch((error) => {
+        toast.error(error.response.data.error);
+      });
+  }
   const userColumns = [
     { key: "id", label: "ID" },
     { key: "email", label: "Email" },
@@ -100,6 +99,7 @@ export default function Admin() {
                     .delete(`/api/users/${user.id}`)
                     .then((response) => {
                       toast.success(response.data.message);
+                      getUsers();
                     })
                     .catch((error) => {
                       toast.error(error.response.data.error);
@@ -132,7 +132,15 @@ export default function Admin() {
               label="Role"
               defaultSelectedKeys={[user.role]}
               onSelectionChange={(keys) => {
-                setIsUserUpdated(keys.values().next().value !== user.role);
+                const userRoleUpdated =
+                  keys.values().next().value !== user.role && keys.size === 1;
+                if (userRoleUpdated) {
+                  setIsUserUpdated(userRoleUpdated);
+                  setUser((prev) => ({
+                    ...prev,
+                    role: keys.values().next().value,
+                  }));
+                }
               }}
             >
               {roles.map((role) => (
@@ -161,7 +169,6 @@ export default function Admin() {
                   })
                   .then((response) => {
                     toast.success(response.data.message);
-                    console.log(response.data);
                     setIsOpen(false);
                   })
                   .catch((error) => {
